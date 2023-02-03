@@ -30,7 +30,7 @@ client.on('messageCreate', async function (message)
             .then(data => name = data.nickname + ' (' + data.user.username + ')');
 
         let tweetId = message.content.match(/\/status\/(\d+)/)[1];
-        if (await TweetContainsVideo(tweetId) || message.embeds.length === 0)
+        if (await TweetContainsVideo(tweetId))
         {
             message.delete();
             message.channel.send(name + ' posted: ' + message.content.replace('twitter.com', 'vxtwitter.com'));
