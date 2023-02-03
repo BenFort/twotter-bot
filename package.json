@@ -1,0 +1,16 @@
+{
+  "name": "twotter-discord-bot",
+  "version": "1.0.0",
+  "description": "A simple discord bot that reposts messages containing twitter links that include embedded videos using vxtwitter",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben Fortin",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
+    "twitter-api-sdk": "^1.2.0"
+  }
+}
