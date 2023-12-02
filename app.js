@@ -36,7 +36,22 @@ client.on('messageCreate', async function (message)
             message.channel.send(name + ' posted: ' + message.content.replace('twitter.com', 'vxtwitter.com'));
         }
     }
+    else if (message.content.includes('https://x.com/'))
+    {
+        let name = '';
+        let guild = client.guilds.cache.get(message.guildId);
+        guild.members
+            .fetch(message.author)
+            .then(data => RepostMessage(message, data.nickname + ' (' + data.user.username + ')', message.content.replace('x.com', 'vxtwitter.com')));
+    }
 });
+
+function RepostMessage(message, name, messageText)
+{
+    console.log("HERE", name, message);
+    message.delete();
+    message.channel.send(name + ' posted: ' + messageText);
+}
 
 async function TweetContainsVideo(id)
 {
