@@ -21,25 +21,26 @@ client.login(process.env.DISCORD_TOKEN);
 
 client.on('messageCreate', async function (message)
 {
-    const addressToChangeTwitterTo = "vxtwitter.com";
+    const ADRESS_TO_CHANGE_TO = "vxtwitter.com";
     let messageContent = message?.content ?? "";
     let repostTweet = true;
 
     // switch to vxtwitter
-    switch(expression) {
+    switch(expression) 
+    {
         case messageContent.includes('https://twitter.com/'):
-          messageContent = messageContent.replace('twitter.com', addressToChangeTwitterTo);
+          messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
           break;
         case messageContent.includes('https://x.com/'):
-            messageContent = messageContent.replace('x.com', addressToChangeTwitterTo);
+            messageContent = messageContent.replace('x.com', ADRESS_TO_CHANGE_TO);
           break;
         default:
             repostTweet = false;
     }
 
     // should be a !repost tweet + return statment but I can't test in this environment
-    if(repostTweet) {
-
+    if(repostTweet) 
+    {
         // strip tracking link
         if (messageContent.match(/\?t=/gm) != null) {
             messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
@@ -50,7 +51,6 @@ client.on('messageCreate', async function (message)
         guild.members
             .fetch(message.author)
             .then(data => RepostMessage(message, data.nickname + ' (' + data.user.username + ')', messageContent));
-
     }
 });
 
