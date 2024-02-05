@@ -46,7 +46,6 @@ client.on('messageCreate', async function (message)
             messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
         }
 
-        // send it cap
         let guild = client.guilds.cache.get(message.guildId);
         guild.members
             .fetch(message.author)
