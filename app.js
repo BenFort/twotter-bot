@@ -23,19 +23,18 @@ client.on('messageCreate', async function (message)
 {
     const ADRESS_TO_CHANGE_TO = "vxtwitter.com";
     let messageContent = message?.content ?? "";
-    let repostTweet = true;
+    let repostTweet = false;
 
     // switch to vxtwitter
-    switch(expression) 
+
+    if(messageContent.includes('https://twitter.com/')) {
+        messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
+        repostTweet = true;
+    } 
+    else if (messageContent.includes('https://x.com/')) 
     {
-        case messageContent.includes('https://twitter.com/'):
-          messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
-          break;
-        case messageContent.includes('https://x.com/'):
-            messageContent = messageContent.replace('x.com', ADRESS_TO_CHANGE_TO);
-          break;
-        default:
-            repostTweet = false;
+        messageContent = messageContent.replace('x.com', ADRESS_TO_CHANGE_TO);
+        repostTweet = true;
     }
 
     // should be a !repost tweet + return statment but I can't test in this environment
