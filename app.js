@@ -23,6 +23,7 @@ client.on('messageCreate', async function (message)
 {
     const addressToChangeTwitterTo = "vxtwitter.com";
     let messageContent = message?.content ?? "";
+    let repostTweet = true;
 
     // switch to vxtwitter
     switch(expression) {
