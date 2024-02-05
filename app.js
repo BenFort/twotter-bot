@@ -21,78 +21,36 @@ client.login(process.env.DISCORD_TOKEN);
 
 client.on('messageCreate', async function (message)
 {
-    if (message.content.includes('https://twitter.com/'))
-    {        
-        let name = '';
-        let guild = client.guilds.cache.get(message.guildId);
-        guild.members
-            .fetch(message.author)
-            .then(data => name = data.nickname + ' (' + data.user.username + ')');
+    const addressToChangeTwitterTo = "vxtwitter.com";
+    let messageContent = message?.content ?? "";
 
-        let tweetId = message.content.match(/\/status\/(\d+)/)[1];
-        if (await TweetContainsVideo(tweetId))
-        {
-            message.delete();
-            message.channel.send(name + ' posted: ' + message.content.replace('twitter.com', 'vxtwitter.com'));
-        }
+    // switch to vxtwitter
+    switch(expression) {
+        case messageContent.includes('https://twitter.com/'):
+          messageContent = messageContent.replace('twitter.com', addressToChangeTwitterTo);
+          break;
+        case messageContent.includes('https://x.com/'):
+            messageContent = messageContent.replace('x.com', addressToChangeTwitterTo);
+          break;
+        default:
+            repostTweet = false;
     }
-    else if (message.content.includes('https://x.com/'))
-    {
-        let name = '';
+
+    // should be a !repost tweet + return statment but I can't test in this environment
+    if(repostTweet) {
+
+        // strip tracking link
+        if (messageContent.match(/\?t=/gm) != null) {
+            messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
+        }
+
+        message.delete();
+
+        // send it cap
         let guild = client.guilds.cache.get(message.guildId);
         guild.members
             .fetch(message.author)
-            .then(data => RepostMessage(message, data.nickname + ' (' + data.user.username + ')', message.content.replace('x.com', 'vxtwitter.com')));
+            .then(data => RepostMessage(message, data.nickname + ' (' + data.user.username + ')', messageContent));
+
     }
 });
-
-function RepostMessage(message, name, messageText)
-{
-    console.log("HERE", name, message);
-    message.delete();
-    message.channel.send(name + ' posted: ' + messageText);
-}
-
-async function TweetContainsVideo(id)
-{
-    const twitter = new Client(process.env.TWITTER_TOKEN);
-    const tweet = await twitter.tweets.findTweetById(id,
-    {
-        'expansions':
-        [
-            'attachments.media_keys',
-            'referenced_tweets.id'
-        ]
-    });
-
-    for (let reference in tweet.data.referenced_tweets)
-    {
-        if (tweet.data.referenced_tweets[reference].type === 'quoted')
-        {
-            const quoteTweet = await twitter.tweets.findTweetById(tweet.data.referenced_tweets[reference].id,
-            {
-                'expansions':
-                [
-                    'attachments.media_keys'
-                ]
-            });
-
-            for (let i in quoteTweet.includes.media)
-            {
-                if (quoteTweet.includes.media[i].type === 'video')
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    for (let i in tweet.includes?.media)
-    {
-        if (tweet.includes.media[i].type === 'video')
-        {
-            return true;
-        }
-    }
-    return false;
-}
