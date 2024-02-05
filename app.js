@@ -3,7 +3,6 @@ require('dotenv').config();
 const discord = require('discord.js');
 const DiscordClient = discord.Client;
 const GatewayIntentBits = discord.GatewayIntentBits;
-const { Client } = require('twitter-api-sdk');
 
 const client = new DiscordClient
 (
