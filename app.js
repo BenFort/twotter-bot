@@ -25,7 +25,6 @@ client.on('messageCreate', async function (message)
     let repostTweet = false;
 
     // switch to vxtwitter
-
     if(messageContent.includes('https://twitter.com/')) 
     {
         messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
