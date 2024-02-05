@@ -26,7 +26,8 @@ client.on('messageCreate', async function (message)
 
     // switch to vxtwitter
 
-    if(messageContent.includes('https://twitter.com/')) {
+    if(messageContent.includes('https://twitter.com/')) 
+    {
         messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
         repostTweet = true;
     } 
@@ -40,7 +41,8 @@ client.on('messageCreate', async function (message)
     if(repostTweet) 
     {
         // strip tracking link
-        if (messageContent.match(/\?t=/gm) != null) {
+        if (messageContent.match(/\?t=/gm) != null) 
+        {
             messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
         }
 
