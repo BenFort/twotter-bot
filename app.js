@@ -45,8 +45,6 @@ client.on('messageCreate', async function (message)
             messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
         }
 
-        message.delete();
-
         // send it cap
         let guild = client.guilds.cache.get(message.guildId);
         guild.members
@@ -55,3 +53,9 @@ client.on('messageCreate', async function (message)
 
     }
 });
+
+function RepostMessage(message, name, messageText)
+{
+    message.delete();
+    message.channel.send(name + ' posted: ' + messageText);
+}
