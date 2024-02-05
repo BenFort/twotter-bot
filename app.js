@@ -36,7 +36,6 @@ client.on('messageCreate', async function (message)
         repostTweet = true;
     }
 
-    // should be a !repost tweet + return statment but I can't test in this environment
     if(repostTweet) 
     {
         // strip tracking link
