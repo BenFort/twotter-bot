@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-const discord = require('discord.js');
-const DiscordClient = discord.Client;
-const GatewayIntentBits = discord.GatewayIntentBits;
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 
-const client = new DiscordClient
+const DELETE_REACT = String.fromCharCode(0x274C);
+
+const client = new Client
 (
     {
         intents: 
@@ -12,13 +12,21 @@ const client = new DiscordClient
             GatewayIntentBits.Guilds,
             GatewayIntentBits.GuildMessages,
             GatewayIntentBits.MessageContent,
+            GatewayIntentBits.GuildMessageReactions
         ]
     }
 );
 
+let clientUserId = 0;
+
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('messageCreate', async function (message)
+client.on(Events.ClientReady, async () =>
+{
+    clientUserId = client.user.id;
+});
+
+client.on(Events.MessageCreate, async function (message)
 {
     const ADRESS_TO_CHANGE_TO = "vxtwitter.com";
     let messageContent = message?.content ?? "";
@@ -45,14 +53,28 @@ client.on('messageCreate', async function (message)
         }
 
         let guild = client.guilds.cache.get(message.guildId);
-        guild.members
-            .fetch(message.author)
-            .then(data => RepostMessage(message, data.nickname + ' (' + data.user.username + ')', messageContent));
+        let member = await guild.members.fetch(message.author)
+        RepostMessage(message, member.user.username + ' (' + member.nickname + ')', messageContent);
     }
 });
+
+client.on(Events.MessageReactionAdd, (reaction, user) =>
+{
+    if (reaction.message.author.id == clientUserId)
+    {
+        let text = reaction.message.content;
+        let originalAuthor = text.substring(0, text.indexOf(' '));
+
+        if (user.username == originalAuthor && reaction._emoji.name == DELETE_REACT)
+        {
+            reaction.message.delete();
+        }
+    }
+});
+
 
 function RepostMessage(message, name, messageText)
 {
     message.delete();
-    message.channel.send(name + ' posted: ' + messageText);
+    message.channel.send(name + ' posted: ' + messageText).then(message => message.react(DELETE_REACT));
 }
