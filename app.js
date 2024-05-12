@@ -73,7 +73,7 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
 			}
 			else if (user.id != clientUserId)
 			{
-				reaction.remove();
+				reaction.remove(user);
 			}
 		}
     }
