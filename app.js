@@ -65,17 +65,19 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
         let text = reaction.message.content;
         let originalAuthor = text.substring(0, text.indexOf(' '));
 
-        if (user.username == originalAuthor && reaction._emoji.name == DELETE_REACT)
+        if (reaction._emoji.name == DELETE_REACT)
         {
-            reaction.message.delete();
-        }
-        else
-        {
-            reaction.remove();
-        }
+			if (user.username == originalAuthor)
+			{
+				reaction.message.delete();
+			}
+			else if (user.id != clientUserId)
+			{
+				reaction.remove();
+			}
+		}
     }
 });
-
 
 function RepostMessage(message, name, messageText)
 {
