@@ -69,6 +69,10 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
         {
             reaction.message.delete();
         }
+        else
+        {
+            reaction.remove();
+        }
     }
 });
 
