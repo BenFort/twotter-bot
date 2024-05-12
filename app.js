@@ -67,15 +67,15 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
 
         if (reaction._emoji.name == DELETE_REACT)
         {
-			if (user.username == originalAuthor)
-			{
-				reaction.message.delete();
-			}
-			else if (user.id != clientUserId)
-			{
-				reaction.users.remove(user);
-			}
-		}
+            if (user.username == originalAuthor)
+            {
+                reaction.message.delete();
+            }
+            else if (user.id != clientUserId)
+            {
+                reaction.users.remove(user);
+            }
+        }
     }
 });
 
