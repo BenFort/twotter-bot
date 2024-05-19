@@ -3,6 +3,7 @@ require('dotenv').config();
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
+const ADRESS_TO_CHANGE_TO = "fxtwitter.com";
 
 const client = new Client
 (
@@ -28,7 +29,6 @@ client.on(Events.ClientReady, async () =>
 
 client.on(Events.MessageCreate, async function (message)
 {
-    const ADRESS_TO_CHANGE_TO = "vxtwitter.com";
     let messageContent = message?.content ?? "";
     let repostTweet = false;
 
