@@ -3,7 +3,8 @@ require('dotenv').config();
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
-const ADRESS_TO_CHANGE_TO = "fxtwitter.com";
+const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
+const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
 
 const client = new Client
 (
@@ -35,12 +36,17 @@ client.on(Events.MessageCreate, async function (message)
     // switch to vxtwitter
     if (messageContent.includes('https://twitter.com/'))
     {
-        messageContent = messageContent.replace('twitter.com', ADRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('twitter.com', TWITTER_ADDRESS_TO_CHANGE_TO);
         repostTweet = true;
     } 
     else if (messageContent.includes('https://x.com/'))
     {
-        messageContent = messageContent.replace('x.com', ADRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
+        repostTweet = true;
+    }
+    else if (messageContent.includes('https://reddit.com/'))
+    {
+        messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
         repostTweet = true;
     }
 
