@@ -5,6 +5,7 @@ const { Client, Events, GatewayIntentBits } = require('discord.js');
 const DELETE_REACT = String.fromCharCode(0x274C);
 const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
 const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
+const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
 
 const client = new Client
 (
@@ -47,6 +48,11 @@ client.on(Events.MessageCreate, async function (message)
     else if (messageContent.includes('reddit.com/'))
     {
         messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
+        repostTweet = true;
+    }
+    else if (messageContent.includes('tiktok.com/'))
+    {
+        messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
         repostTweet = true;
     }
 
