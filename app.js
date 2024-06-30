@@ -45,6 +45,7 @@ client.on(Events.MessageCreate, async function (message)
     else if (messageContent.includes('https://x.com/'))
     {
         messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
+        isTweet = true;
         repostMessage = true;
     }
     else if (messageContent.includes('reddit.com/'))
