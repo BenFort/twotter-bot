@@ -10,7 +10,7 @@ const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
 const client = new Client
 (
     {
-        intents: 
+        intents:
         [
             GatewayIntentBits.Guilds,
             GatewayIntentBits.GuildMessages,
@@ -32,38 +32,43 @@ client.on(Events.ClientReady, async () =>
 client.on(Events.MessageCreate, async function (message)
 {
     let messageContent = message?.content ?? "";
-    let repostTweet = false;
+    let isTweet = false;
+    let repostMessage = false;
 
     // switch to vxtwitter
     if (messageContent.includes('https://twitter.com/'))
     {
         messageContent = messageContent.replace('twitter.com', TWITTER_ADDRESS_TO_CHANGE_TO);
-        repostTweet = true;
+        isTweet = true;
+        repostMessage = true;
     } 
     else if (messageContent.includes('https://x.com/'))
     {
         messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
-        repostTweet = true;
+        repostMessage = true;
     }
     else if (messageContent.includes('reddit.com/'))
     {
         messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
-        repostTweet = true;
+        repostMessage = true;
     }
     else if (messageContent.includes('tiktok.com/'))
     {
         messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
-        repostTweet = true;
+        repostMessage = true;
     }
 
-    if (repostTweet) 
+    if (isTweet)
     {
         // strip tracking link
         if (messageContent.match(/\?t=/gm) != null)
         {
             messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
         }
-
+    }
+    
+    if (repostMessage)
+    {
         let guild = client.guilds.cache.get(message.guildId);
         let member = await guild.members.fetch(message.author)
         RepostMessage(message, member.user.username + ' (' + member.nickname + ')', messageContent);
@@ -72,18 +77,18 @@ client.on(Events.MessageCreate, async function (message)
 
 client.on(Events.MessageReactionAdd, (reaction, user) =>
 {
-    if (reaction.message.author.id == clientUserId)
+    if (reaction.message.author.id === clientUserId)
     {
         let text = reaction.message.content;
         let originalAuthor = text.substring(0, text.indexOf(' '));
 
-        if (reaction._emoji.name == DELETE_REACT)
+        if (reaction._emoji.name === DELETE_REACT)
         {
-            if (user.username == originalAuthor)
+            if (user.username === originalAuthor)
             {
                 reaction.message.delete();
             }
-            else if (user.id != clientUserId)
+            else if (user.id !== clientUserId)
             {
                 reaction.users.remove(user);
             }
