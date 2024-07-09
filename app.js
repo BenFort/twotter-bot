@@ -6,6 +6,7 @@ const DELETE_REACT = String.fromCharCode(0x274C);
 const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
 const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
 const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
+const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
 
 const client = new Client
 (
@@ -56,6 +57,11 @@ client.on(Events.MessageCreate, async function (message)
     else if (messageContent.includes('tiktok.com/'))
     {
         messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
+        repostMessage = true;
+    }
+    else if (messageContent.includes('instagram.com/'))
+    {
+        messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
 
