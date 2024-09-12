@@ -59,7 +59,7 @@ client.on(Events.MessageCreate, async function (message)
         messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.includes('instagram.com/'))
+    else if (messageContent.includes('https://www.instagram.com/') || messageContent.includes('https://instagram.com/'))
     {
         messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
