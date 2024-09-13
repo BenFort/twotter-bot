@@ -32,6 +32,10 @@ client.on(Events.ClientReady, async () =>
 
 client.on(Events.MessageCreate, async function (message)
 {
+    if (message.author.id === clientUserId) {
+        return;
+    }
+
     let messageContent = message?.content ?? "";
     let isTweet = false;
     let repostMessage = false;
