@@ -47,23 +47,23 @@ client.on(Events.MessageCreate, async function (message)
         isTweet = true;
         repostMessage = true;
     } 
-    else if (messageContent.match(/https:\/\/(www\.)?x\.com\//i))
+    else if (messageContent.match(/https:\/\/(www\.)?x\.com\//i) !== null)
     {
         messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
         isTweet = true;
         repostMessage = true;
     }
-    else if (messageContent.match(/https:\/\/(www\.)?reddit\.com\//i))
+    else if (messageContent.match(/https:\/\/(www\.)?reddit\.com\//i) !== null)
     {
         messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.match(/https:\/\/(www\.)?tiktok\.com\//i))
+    else if (messageContent.match(/https:\/\/(www\.)?tiktok\.com\//i) !== null)
     {
         messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.match(/https:\/\/(www\.)?instagram\.com\//i))
+    else if (messageContent.match(/https:\/\/(www\.)?instagram\.com\//i) !== null)
     {
         messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
