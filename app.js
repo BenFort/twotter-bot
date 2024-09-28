@@ -3,10 +3,10 @@ require('dotenv').config();
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
-const TWITTER_ADDRESS_TO_CHANGE_TO = "https://fxtwitter.com";
-const REDDIT_ADDRESS_TO_CHANGE_TO = "https://rxddit.com";
-const TIKTOK_ADDRESS_TO_CHANGE_TO = "https://tnktok.com";
-const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "https://instagramez.com";
+const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
+const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
+const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
+const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
 
 const client = new Client
 (
@@ -41,31 +41,31 @@ client.on(Events.MessageCreate, async function (message)
     let repostMessage = false;
 
     // switch to vxtwitter
-    if (messageContent.includes('https://twitter.com/'))
+    if (messageContent.match(/https:\/\/(www\.)?twitter\.com\//i) !== null)
     {
-        messageContent = messageContent.replace('https://twitter.com', TWITTER_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('twitter.com', TWITTER_ADDRESS_TO_CHANGE_TO);
         isTweet = true;
         repostMessage = true;
     } 
-    else if (messageContent.includes('https://x.com/'))
+    else if (messageContent.match(/https:\/\/(www\.)?x\.com\//i))
     {
-        messageContent = messageContent.replace('https://x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
         isTweet = true;
         repostMessage = true;
     }
-    else if (messageContent.includes('https://reddit.com/'))
+    else if (messageContent.match(/https:\/\/(www\.)?reddit\.com\//i))
     {
-        messageContent = messageContent.replace('https://reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.includes('https://tiktok.com/'))
+    else if (messageContent.match(/https:\/\/(www\.)?tiktok\.com\//i))
     {
-        messageContent = messageContent.replace('https://tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.includes('https://instagram.com/'))
+    else if (messageContent.match(/https:\/\/(www\.)?instagram\.com\//i))
     {
-        messageContent = messageContent.replace('https://instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
 
