@@ -32,7 +32,8 @@ client.on(Events.ClientReady, async () =>
 
 client.on(Events.MessageCreate, async function (message)
 {
-    if (message.author.id === clientUserId) {
+    if (message.author.id === clientUserId)
+	{
         return;
     }
 
@@ -58,7 +59,7 @@ client.on(Events.MessageCreate, async function (message)
         messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.match(/https:\/\/(www\.)?tiktok\.com\//i) !== null)
+    else if (messageContent.match(/https:\/\/(www\.)?(vm\.)?tiktok\.com\//i) !== null)
     {
         messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
