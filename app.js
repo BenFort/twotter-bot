@@ -71,7 +71,7 @@ client.on(Events.MessageCreate, async function (message)
         messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
-    else if (messageContent.match(/https:\/\/(www\.)?pixiv\.com\//i) !== null)
+    else if (messageContent.match(/https:\/\/(www\.)?pixiv\.net\//i) !== null)
     {
         messageContent = messageContent.replace('pixiv.net', PIXIV_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
