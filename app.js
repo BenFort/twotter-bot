@@ -7,7 +7,7 @@ const TWITTER_ADDRESS_TO_CHANGE_TO = "girlcockx.com";
 const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
 const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
 const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
-const PIXIV_ADDRESS_TO_CHANGE_TO = "phixiv.com";
+const PIXIV_ADDRESS_TO_CHANGE_TO = "phixiv.net";
 const BLUESKY_ADDRESS_TO_CHANGE_TO = "bskyx.app";
 
 const client = new Client
@@ -73,7 +73,7 @@ client.on(Events.MessageCreate, async function (message)
     }
     else if (messageContent.match(/https:\/\/(www\.)?pixiv\.com\//i) !== null)
     {
-        messageContent = messageContent.replace('pixiv.com', PIXIV_ADDRESS_TO_CHANGE_TO);
+        messageContent = messageContent.replace('pixiv.net', PIXIV_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
     else if (messageContent.match(/https:\/\/(www\.)?bsky\.app\//i) !== null)
