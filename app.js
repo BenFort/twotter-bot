@@ -9,6 +9,7 @@ const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
 const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
 const PIXIV_ADDRESS_TO_CHANGE_TO = "phixiv.net";
 const BLUESKY_ADDRESS_TO_CHANGE_TO = "bskyx.app";
+const TUMBLR_ADDRESS_TO_CHANGE_TO = "tpmblr.com";
 
 const client = new Client
 (
@@ -79,6 +80,11 @@ client.on(Events.MessageCreate, async function (message)
     else if (messageContent.match(/https:\/\/(www\.)?bsky\.app\//i) !== null)
     {
         messageContent = messageContent.replace('bsky.app', BLUESKY_ADDRESS_TO_CHANGE_TO);
+        repostMessage = true;
+    }
+    else if (messageContent.match(/https:\/\/(.)*(\.)?tumblr\.com\//i) !== null) // works with tumblr.com/account and account.tumblr.com
+    {
+        messageContent = messageContent.replace('tumblr.com', TUMBLR_ADDRESS_TO_CHANGE_TO);
         repostMessage = true;
     }
 
