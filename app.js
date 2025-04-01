@@ -3,7 +3,7 @@ require('dotenv').config();
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
-const TWITTER_ADDRESS_TO_CHANGE_TO = "girlcockx.com";
+const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
 const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
 const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
 const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
