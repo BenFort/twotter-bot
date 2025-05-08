@@ -63,15 +63,7 @@ client.on(Events.MessageCreate, async function (message)
         let uri = URI(url);
         const domain = uri.domain();
 
-        // Remove tracking parameters
-        if (domain === 'twitter.com' || domain === 'x.com')
-        {
-            uri.removeQuery('t');
-        } 
-        else if (domain === 'youtube.com' || domain === 'youtu.be')
-        {
-            uri.removeQuery('si');
-        }
+        RemoveTrackingParameters(uri);
 
         // Replace domain with its embed-friendly version (if it has one)
         if (DOMAIN_MAPPING.hasOwnProperty(domain))
@@ -115,6 +107,36 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
         }
     }
 });
+
+/**
+ * Returns whether `domain` equals any of `matching_domains` (or their embed-friendly versions).
+ */
+function DomainMatches(domain, ...matching_domains)
+{
+    let matches = [];
+    for (const d of matching_domains)
+    {
+        matches.push(d, DOMAIN_MAPPING[d]);
+    }
+    return matches.includes(domain);
+}
+
+/**
+ * Strips tracking/fingerprinting query parameters from `uri`.
+ */
+function RemoveTrackingParameters(uri)
+{
+    const domain = uri.domain();
+
+    if (DomainMatches(domain, 'twitter.com', 'x.com'))
+    {
+        uri.removeQuery('t');
+    }
+    else if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
+    {
+        uri.removeQuery('si');
+    }
+}
 
 function RepostMessage(message, name, messageText)
 {
