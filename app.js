@@ -1,15 +1,26 @@
 require('dotenv').config();
 
 const { Client, Events, GatewayIntentBits } = require('discord.js');
+const URI = require('urijs');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
-const TWITTER_ADDRESS_TO_CHANGE_TO = "fxtwitter.com";
-const REDDIT_ADDRESS_TO_CHANGE_TO = "rxddit.com";
-const TIKTOK_ADDRESS_TO_CHANGE_TO = "tnktok.com";
-const INSTAGRAM_ADDRESS_TO_CHANGE_TO = "instagramez.com";
-const PIXIV_ADDRESS_TO_CHANGE_TO = "phixiv.net";
-const BLUESKY_ADDRESS_TO_CHANGE_TO = "bskyx.app";
-const TUMBLR_ADDRESS_TO_CHANGE_TO = "tpmblr.com";
+
+// Maps a domain to its embed-friendly replacement.
+//
+// Note that a domain is only the TLD + 2LD (Top-Level Domain + 2nd-Level Domain).
+// E.g. in the URL "https://account.tumblr.com/my-account", the domain is "tumblr.com".
+// For more information:
+//      https://medialize.github.io/URI.js/about-uris.html#components
+const DOMAIN_MAPPING = {
+    'twitter.com': 'fxtwitter.com',
+    'x.com': 'fixupx.com',
+    'reddit.com': 'rxddit.com',
+    'tiktok.com': 'tnktok.com',
+    'instagram.com': 'instagramez.com',
+    'pixiv.net': 'phixiv.net',
+    'bsky.app': 'bskyx.app',
+    'tumblr.com': 'tpmblr.com'
+}
 
 const client = new Client
 (
@@ -36,67 +47,38 @@ client.on(Events.ClientReady, async () =>
 client.on(Events.MessageCreate, async function (message)
 {
     if (message.author.id === clientUserId)
-	{
+    {
         return;
     }
 
     let messageContent = message?.content ?? "";
-    let isTweet = false;
     let repostMessage = false;
 
-    // switch to vxtwitter
-    if (messageContent.match(/https:\/\/(www\.)?twitter\.com\//i) !== null)
-    {
-        messageContent = messageContent.replace('twitter.com', TWITTER_ADDRESS_TO_CHANGE_TO);
-        isTweet = true;
-        repostMessage = true;
-    } 
-    else if (messageContent.match(/https:\/\/(www\.)?x\.com\//i) !== null)
-    {
-        messageContent = messageContent.replace('x.com', TWITTER_ADDRESS_TO_CHANGE_TO);
-        isTweet = true;
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(www\.)?reddit\.com\//i) !== null)
-    {
-        messageContent = messageContent.replace('reddit.com', REDDIT_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(www\.)?(vm\.)?tiktok\.com\//i) !== null)
-    {
-        messageContent = messageContent.replace('tiktok.com', TIKTOK_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(www\.)?instagram\.com\//i) !== null)
-    {
-        messageContent = messageContent.replace('instagram.com', INSTAGRAM_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(www\.)?pixiv\.net\//i) !== null)
-    {
-        messageContent = messageContent.replace('pixiv.net', PIXIV_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(www\.)?bsky\.app\//i) !== null)
-    {
-        messageContent = messageContent.replace('bsky.app', BLUESKY_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-    else if (messageContent.match(/https:\/\/(.)*(\.)?tumblr\.com\//i) !== null) // works with tumblr.com/account and account.tumblr.com
-    {
-        messageContent = messageContent.replace('tumblr.com', TUMBLR_ADDRESS_TO_CHANGE_TO);
-        repostMessage = true;
-    }
-
-    if (isTweet)
-    {
-        // strip tracking link
-        if (messageContent.match(/\?t=/gm) != null)
-        {
-            messageContent = messageContent.match(/.+?(?=\?t=)/gm)?.[0] ?? messageContent;
+    messageContent = URI.withinString(messageContent, function(url, start, end, source) {
+        // Don't do anything if the url is wrapped in Discord's non-embed syntax
+        if (source[start-1] === '<' && source[end] === '>') {
+            return url;
         }
-    }
-    
+
+        let uri = URI(url);
+        const domain = uri.domain();
+
+        RemoveTrackingParameters(uri);
+
+        // Replace domain with its embed-friendly version (if it has one)
+        if (DOMAIN_MAPPING.hasOwnProperty(domain))
+        {
+            uri.domain(DOMAIN_MAPPING[domain]);
+        }
+
+        // Only repost if a URL has actually changed
+        if (!uri.equals(url))
+        {
+            repostMessage = true;
+        }
+        return uri.toString();
+    })
+
     if (repostMessage)
     {
         let guild = client.guilds.cache.get(message.guildId);
@@ -125,6 +107,36 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
         }
     }
 });
+
+/**
+ * Returns whether `domain` equals any of `matching_domains` (or their embed-friendly versions).
+ */
+function DomainMatches(domain, ...matching_domains)
+{
+    let matches = [];
+    for (const d of matching_domains)
+    {
+        matches.push(d, DOMAIN_MAPPING[d]);
+    }
+    return matches.includes(domain);
+}
+
+/**
+ * Strips tracking/fingerprinting query parameters from `uri`.
+ */
+function RemoveTrackingParameters(uri)
+{
+    const domain = uri.domain();
+
+    if (DomainMatches(domain, 'twitter.com', 'x.com'))
+    {
+        uri.removeQuery('t');
+    }
+    else if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
+    {
+        uri.removeQuery('si');
+    }
+}
 
 function RepostMessage(message, name, messageText)
 {
