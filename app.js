@@ -12,8 +12,8 @@ const DELETE_REACT = String.fromCharCode(0x274C);
 // For more information:
 //      https://medialize.github.io/URI.js/about-uris.html#components
 const DOMAIN_MAPPING = {
-    'twitter.com': 'fxtwitter.com',
-    'x.com': 'fixupx.com',
+    'twitter.com': 'xcancel.com',
+    'x.com': 'xcancel.com',
     'reddit.com': 'rxddit.com',
     'tiktok.com': 'tnktok.com',
     'instagram.com': 'instagramez.com',
@@ -54,9 +54,11 @@ client.on(Events.MessageCreate, async function (message)
     let messageContent = message?.content ?? "";
     let repostMessage = false;
 
-    messageContent = URI.withinString(messageContent, function(url, start, end, source) {
+    messageContent = URI.withinString(messageContent, function(url, start, end, source)
+	{
         // Don't do anything if the url is wrapped in Discord's non-embed syntax
-        if (source[start-1] === '<' && source[end] === '>') {
+        if (source[start-1] === '<' && source[end] === '>')
+		{
             return url;
         }
 
@@ -130,12 +132,17 @@ function RemoveTrackingParameters(uri)
 
     if (DomainMatches(domain, 'twitter.com', 'x.com'))
     {
-        uri.removeQuery('t');
+        uri.removeQuery(['t', 's']);
     }
     else if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
     {
         uri.removeQuery('si');
     }
+	else if (DomainMatches(domain, 'reddit.com'))
+    {
+        uri.removeQuery(['utm_source', 'utm_medium', 'utm_name', 'utm_term', 'utm_content']);
+    }
+
 }
 
 function RepostMessage(message, name, messageText)
