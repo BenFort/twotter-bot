@@ -12,8 +12,8 @@ const DELETE_REACT = String.fromCharCode(0x274C);
 // For more information:
 //      https://medialize.github.io/URI.js/about-uris.html#components
 const DOMAIN_MAPPING = {
-    'twitter.com': 'xcancel.com',
-    'x.com': 'xcancel.com',
+    'twitter.com': 'fxtwitter.com',
+    'x.com': 'fixupx.com',
     'reddit.com': 'rxddit.com',
     'tiktok.com': 'tnktok.com',
     'instagram.com': 'instagramez.com',
