@@ -115,12 +115,14 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
  */
 function DomainMatches(domain, ...matching_domains)
 {
-    let matches = [];
     for (const d of matching_domains)
     {
-        matches.push(d, DOMAIN_MAPPING[d]);
+        if (domain === d || domain === DOMAIN_MAPPING[d])
+        {
+            return true;
+        }
     }
-    return matches.includes(domain);
+    return false;
 }
 
 /**
@@ -138,11 +140,10 @@ function RemoveTrackingParameters(uri)
     {
         uri.removeQuery('si');
     }
-	else if (DomainMatches(domain, 'reddit.com'))
+    else if (DomainMatches(domain, 'reddit.com'))
     {
         uri.removeQuery(['utm_source', 'utm_medium', 'utm_name', 'utm_term', 'utm_content']);
     }
-
 }
 
 function RepostMessage(message, name, messageText)
