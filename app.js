@@ -16,7 +16,7 @@ const DOMAIN_MAPPING = {
     'x.com': 'fixupx.com',
     'reddit.com': 'rxddit.com',
     'tiktok.com': 'tnktok.com',
-    'instagram.com': 'instagramez.com',
+    'instagram.com': 'vxinstagram.com',
     'pixiv.net': 'phixiv.net',
     'bsky.app': 'bskyx.app',
     'tumblr.com': 'tpmblr.com'
