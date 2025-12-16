@@ -132,17 +132,15 @@ function RemoveTrackingParameters(uri)
 {
     const domain = uri.domain();
 
-    if (DomainMatches(domain, 'twitter.com', 'x.com'))
-    {
-        uri.removeQuery(['t', 's']);
-    }
-    else if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
+    if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
     {
         uri.removeQuery('si');
     }
-    else if (DomainMatches(domain, 'reddit.com'))
+    // Social media sites will often add query parameters which break
+    // the embed-friendly services. We just remove all of them to be safe.
+    else if (DOMAIN_MAPPING.hasOwnProperty(domain))
     {
-        uri.removeQuery(['utm_source', 'utm_medium', 'utm_name', 'utm_term', 'utm_content']);
+        uri.query('');
     }
 }
 
