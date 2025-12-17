@@ -134,7 +134,7 @@ function RemoveTrackingParameters(uri)
 
     if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
     {
-        uri.removeQuery('si');
+        uri.removeQuery(Object.getOwnPropertyNames(URI.parseQuery(uri.query())).filter((param) => !(param === 'v' || param === 't')));
     }
     // Social media sites will often add query parameters which break
     // the embed-friendly services. We just remove all of them to be safe.
