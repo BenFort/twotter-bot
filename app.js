@@ -86,8 +86,14 @@ client.on(Events.MessageCreate, async function (message)
     if (repostMessage)
     {
         let guild = client.guilds.cache.get(message.guildId);
-        let member = await guild.members.fetch(message.author)
-        RepostMessage(message, member.user.username + ' (' + member.nickname + ')', messageContent);
+        let member = await guild.members.fetch(message.author);
+        let name = member.user.username;
+        console.log(member.nickname)
+        if (member.nickname !== null && member.nickname !== undefined)
+        {
+            name = member.user.username + ' (' + member.nickname + ')';
+        }
+        RepostMessage(message, name, messageContent);
     }
 });
 
