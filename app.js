@@ -22,6 +22,8 @@ const DOMAIN_MAPPING = {
     'tumblr.com': 'tpmblr.com'
 }
 
+const SAFE_YOUTUBE_PARAMS = ['v', 't', 'list'];
+
 const client = new Client
 (
     {
@@ -84,8 +86,13 @@ client.on(Events.MessageCreate, async function (message)
     if (repostMessage)
     {
         let guild = client.guilds.cache.get(message.guildId);
-        let member = await guild.members.fetch(message.author)
-        RepostMessage(message, member.user.username + ' (' + member.nickname + ')', messageContent);
+        let member = await guild.members.fetch(message.author);
+        let name = member.user.username;
+        if (member.nickname !== null && member.nickname !== undefined)
+        {
+            name = member.user.username + ' (' + member.nickname + ')';
+        }
+        RepostMessage(message, name, messageContent);
     }
 });
 
@@ -134,7 +141,7 @@ function RemoveTrackingParameters(uri)
 
     if (DomainMatches(domain, 'youtube.com', 'youtu.be'))
     {
-        uri.removeQuery(Object.getOwnPropertyNames(URI.parseQuery(uri.query())).filter((param) => !(param === 'v' || param === 't')));
+        uri.removeQuery(Object.getOwnPropertyNames(URI.parseQuery(uri.query())).filter((param) => !SAFE_YOUTUBE_PARAMS.includes(param)));
     }
     // Social media sites will often add query parameters which break
     // the embed-friendly services. We just remove all of them to be safe.
