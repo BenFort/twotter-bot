@@ -56,18 +56,21 @@ client.on(Events.MessageCreate, async function (message)
     let repostMessage = false;
 
     messageContent = URI.withinString(messageContent, function(url, start, end, source)
-	{
+    {
         // Don't do anything if the url is wrapped in Discord's non-embed syntax
         if (source[start-1] === '<' && source[end] === '>')
-		{
+        {
             return url;
         }
 
         let uri = URI(url);
-        const domain = uri.domain();
+
+        // Put the spoiler closing tag back
+        let addSpoilerClosingTag = (uri.query().endsWith("||"));
 
         RemoveTrackingParameters(uri);
-
+        
+        const domain = uri.domain();
         // Replace domain with its embed-friendly version (if it has one)
         if (DOMAIN_MAPPING.hasOwnProperty(domain))
         {
@@ -79,7 +82,7 @@ client.on(Events.MessageCreate, async function (message)
         {
             repostMessage = true;
         }
-        return uri.toString();
+        return uri.toString() + (addSpoilerClosingTag ? '||' : '');
     })
 
     if (repostMessage)
