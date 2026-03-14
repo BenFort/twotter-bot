@@ -9,8 +9,8 @@
   "author": "Ben Fortin",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.15.2",
-    "dotenv": "^16.4.5",
+    "discord.js": "^14.25.1",
+    "dotenv": "^16.6.1",
     "twitter-api-sdk": "^1.2.1",
     "urijs": "^1.19.11"
   }
