@@ -51,6 +51,16 @@ client.on(Events.MessageCreate, async function (message)
     {
         return;
     }
+    
+    let replyMessage = null;
+    
+    try
+    {
+        replyMessage = await message.fetchReference();
+    }
+    catch (error)
+    {
+    }
 
     let messageContent = message?.content ?? "";
     let repostMessage = false;
@@ -94,7 +104,7 @@ client.on(Events.MessageCreate, async function (message)
         {
             name = member.user.username + ' (' + member.nickname + ')';
         }
-        RepostMessage(message, name, messageContent);
+        RepostMessage(message, name, messageContent, replyMessage);
     }
 });
 
@@ -153,8 +163,18 @@ function RemoveTrackingParameters(uri)
     }
 }
 
-function RepostMessage(message, name, messageText)
+function RepostMessage(message, name, messageText, replyMessage)
 {
     message.delete();
-    message.channel.send(name + ' posted: ' + messageText).then(message => message.react(DELETE_REACT));
+    
+    let repostText = name + ' posted: ' + messageText;
+    
+    if (replyMessage === null)
+    {
+        message.channel.send(repostText).then(sentMessage => sentMessage.react(DELETE_REACT));
+    }
+    else
+    {
+        replyMessage.reply(repostText).then(sentMessage => sentMessage.react(DELETE_REACT));
+    }
 }
