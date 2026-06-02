@@ -14,7 +14,7 @@ const DELETE_REACT = String.fromCharCode(0x274C);
 const DOMAIN_MAPPING = {
     'twitter.com': 'fxtwitter.com',
     'x.com': 'fixupx.com',
-    'reddit.com': 'rxddit.com',
+    'reddit.com': 'vxreddit.com',
     'tiktok.com': 'tnktok.com',
     'instagram.com': 'kkinstagram.com',
     'pixiv.net': 'phixiv.net',
