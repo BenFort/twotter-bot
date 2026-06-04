@@ -132,20 +132,27 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
                 reaction.users.remove(user);
             }
         }
-        else if (reaction._emoji.name === FALLBACK_REACT && user.id !== clientUserId)
+        else if (reaction._emoji.name === FALLBACK_REACT)
         {
-            const fallback = fallbacks.get(reaction.message.id);
-            if (fallback)
+            if (user.username === originalAuthor)
             {
-                fallbacks.delete(reaction.message.id);
-                const channel = reaction.message.channel;
-                reaction.message.delete().then(() =>
+                const fallback = fallbacks.get(reaction.message.id);
+                if (fallback)
                 {
-                    const send = fallback.replyMessage
-                        ? fallback.replyMessage.reply(fallback.text)
-                        : channel.send(fallback.text);
-                    send.then(sentMessage => sentMessage.react(DELETE_REACT));
-                });
+                    fallbacks.delete(reaction.message.id);
+                    const channel = reaction.message.channel;
+                    reaction.message.delete().then(() =>
+                    {
+                        const send = fallback.replyMessage
+                            ? fallback.replyMessage.reply(fallback.text)
+                            : channel.send(fallback.text);
+                        send.then(sentMessage => sentMessage.react(DELETE_REACT));
+                    });
+                }
+            }
+            else if (user.id !== clientUserId)
+            {
+                reaction.users.remove(user);
             }
         }
     }
