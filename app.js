@@ -113,7 +113,7 @@ client.on(Events.MessageCreate, async function (message)
     }
 });
 
-client.on(Events.MessageReactionAdd, (reaction, user) =>
+client.on(Events.MessageReactionAdd, async (reaction, user) =>
 {
     if (reaction.message.author.id === clientUserId)
     {
@@ -141,13 +141,8 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
                 {
                     fallbacks.delete(reaction.message.id);
                     const channel = reaction.message.channel;
-                    reaction.message.delete().then(() =>
-                    {
-                        const send = fallback.replyMessage
-                            ? fallback.replyMessage.reply(fallback.text)
-                            : channel.send(fallback.text);
-                        send.then(sentMessage => sentMessage.react(DELETE_REACT));
-                    });
+                    await reaction.message.delete();
+                    await InitializeBotMessage(channel, fallback.replyMessage, fallback.text);
                 }
             }
             else if (user.id !== clientUserId)
@@ -192,29 +187,21 @@ function RemoveTrackingParameters(uri)
     }
 }
 
-function RepostMessage(message, name, messageText, originalText, replyMessage)
+async function InitializeBotMessage(channel, replyMessage, text)
 {
-    message.delete();
+    const sentMessage = await (replyMessage ? replyMessage.reply(text) : channel.send(text));
+    await sentMessage.react(DELETE_REACT);
+    return sentMessage;
+}
+
+async function RepostMessage(message, name, messageText, originalText, replyMessage)
+{
+    await message.delete();
 
     let repostText = name + ' posted: ' + messageText;
     let fallbackText = name + ' posted: ' + originalText;
 
-    if (replyMessage === null)
-    {
-        message.channel.send(repostText).then(sentMessage =>
-        {
-            sentMessage.react(DELETE_REACT);
-            sentMessage.react(FALLBACK_REACT);
-            fallbacks.set(sentMessage.id, { text: fallbackText, replyMessage });
-        });
-    }
-    else
-    {
-        replyMessage.reply(repostText).then(sentMessage =>
-        {
-            sentMessage.react(DELETE_REACT);
-            sentMessage.react(FALLBACK_REACT);
-            fallbacks.set(sentMessage.id, { text: fallbackText, replyMessage });
-        });
-    }
+    const sentMessage = await InitializeBotMessage(message.channel, replyMessage, repostText);
+    await sentMessage.react(FALLBACK_REACT);
+    fallbacks.set(sentMessage.id, { text: fallbackText, replyMessage });
 }
