@@ -4,6 +4,7 @@ const { Client, Events, GatewayIntentBits } = require('discord.js');
 const URI = require('urijs');
 
 const DELETE_REACT = String.fromCharCode(0x274C);
+const FALLBACK_REACT = String.fromCodePoint(0x1F517);
 
 // Maps a domain to its embed-friendly replacement.
 //
@@ -39,6 +40,8 @@ const client = new Client
 
 let clientUserId = 0;
 
+const fallbacks = new Map();
+
 client.login(process.env.DISCORD_TOKEN);
 
 client.on(Events.ClientReady, async () =>
@@ -52,9 +55,9 @@ client.on(Events.MessageCreate, async function (message)
     {
         return;
     }
-    
+
     let replyMessage = null;
-    
+
     try
     {
         replyMessage = await message.fetchReference();
@@ -63,7 +66,8 @@ client.on(Events.MessageCreate, async function (message)
     {
     }
 
-    let messageContent = message?.content ?? "";
+    const originalContent = message?.content ?? "";
+    let messageContent = originalContent;
     let repostMessage = false;
 
     messageContent = URI.withinString(messageContent, function(url, start, end, source)
@@ -80,7 +84,7 @@ client.on(Events.MessageCreate, async function (message)
         let addSpoilerClosingTag = (uri.query().endsWith("||"));
 
         RemoveTrackingParameters(uri);
-        
+
         const domain = uri.domain();
         // Replace domain with its embed-friendly version (if it has one)
         if (DOMAIN_MAPPING.hasOwnProperty(domain))
@@ -105,11 +109,11 @@ client.on(Events.MessageCreate, async function (message)
         {
             name = member.user.username + ' (' + member.nickname + ')';
         }
-        RepostMessage(message, name, messageContent, replyMessage);
+        RepostMessage(message, name, messageContent, originalContent, replyMessage);
     }
 });
 
-client.on(Events.MessageReactionAdd, (reaction, user) =>
+client.on(Events.MessageReactionAdd, async (reaction, user) =>
 {
     if (reaction.message.author.id === clientUserId)
     {
@@ -120,7 +124,26 @@ client.on(Events.MessageReactionAdd, (reaction, user) =>
         {
             if (user.username === originalAuthor)
             {
+                fallbacks.delete(reaction.message.id);
                 reaction.message.delete();
+            }
+            else if (user.id !== clientUserId)
+            {
+                reaction.users.remove(user);
+            }
+        }
+        else if (reaction._emoji.name === FALLBACK_REACT)
+        {
+            if (user.username === originalAuthor)
+            {
+                const fallback = fallbacks.get(reaction.message.id);
+                if (fallback)
+                {
+                    fallbacks.delete(reaction.message.id);
+                    const channel = reaction.message.channel;
+                    await reaction.message.delete();
+                    await InitializeBotMessage(channel, fallback.replyMessage, fallback.text);
+                }
             }
             else if (user.id !== clientUserId)
             {
@@ -164,18 +187,21 @@ function RemoveTrackingParameters(uri)
     }
 }
 
-function RepostMessage(message, name, messageText, replyMessage)
+async function InitializeBotMessage(channel, replyMessage, text)
 {
-    message.delete();
-    
+    const sentMessage = await (replyMessage ? replyMessage.reply(text) : channel.send(text));
+    await sentMessage.react(DELETE_REACT);
+    return sentMessage;
+}
+
+async function RepostMessage(message, name, messageText, originalText, replyMessage)
+{
+    await message.delete();
+
     let repostText = name + ' posted: ' + messageText;
-    
-    if (replyMessage === null)
-    {
-        message.channel.send(repostText).then(sentMessage => sentMessage.react(DELETE_REACT));
-    }
-    else
-    {
-        replyMessage.reply(repostText).then(sentMessage => sentMessage.react(DELETE_REACT));
-    }
+    let fallbackText = name + ' posted: ' + originalText;
+
+    const sentMessage = await InitializeBotMessage(message.channel, replyMessage, repostText);
+    await sentMessage.react(FALLBACK_REACT);
+    fallbacks.set(sentMessage.id, { text: fallbackText, replyMessage });
 }
